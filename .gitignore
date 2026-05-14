@@ -1,5 +1,8 @@
-node_modules/
-dist/
-.env
 .DS_Store
-*.js.map
+back/node_modules/
+back/dist/
+back/.env
+back/uploads/
+front/node_modules/
+front/.next/
+front/.env*

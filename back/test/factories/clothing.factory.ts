@@ -4,6 +4,7 @@ import { Clothing } from '../../src/lib/models/Clothing';
 
 export const ClothingFactory = new Factory<Clothing>()
   .attr('id', () => faker.string.uuid())
+  .attr('userId', () => faker.string.uuid()) // override in tests with real user id
   .attr('imageUrl', () => faker.image.url())
   .attr('description', () => faker.commerce.productDescription())
   .attr('category', () => faker.helpers.arrayElement(['remeras', 'pantalones', 'zapatillas']))

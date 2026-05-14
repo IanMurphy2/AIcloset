@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
     "build:tsoa": "tsoa spec-and-routes",
     "dev": "npm run build:tsoa && ts-node-dev --respawn --transpile-only src/api/index.ts",
     "build": "npm run build:tsoa && tsc",
@@ -15,6 +15,7 @@
   "description": "",
   "dependencies": {
     "@alanszp/logger": "^20.0.1",
+    "bcryptjs": "^3.0.3",
     "class-validator": "^0.14.4",
     "convict": "^6.2.4",
     "dotenv": "^17.3.1",
@@ -22,6 +23,7 @@
     "i18next": "^25.8.13",
     "ioredis": "^5.9.3",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^1.4.5-lts.1",
     "passport": "^0.7.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
@@ -34,20 +36,35 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "roots": ["<rootDir>/test"],
-    "transformIgnorePatterns": ["node_modules/(?!@faker-js)"],
+    "setupFiles": ["<rootDir>/test/setup.ts"],
+    "roots": [
+      "<rootDir>/test"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!@faker-js)"
+    ],
     "transform": {
-      "^.+\\.[tj]sx?$": ["ts-jest", { "tsconfig": { "allowJs": true } }]
+      "^.+\\.[tj]sx?$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "allowJs": true
+          }
+        }
+      ]
     }
   },
   "devDependencies": {
     "@faker-js/faker": "^10.3.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/convict": "^6.1.6",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
+    "@types/multer": "^1.4.12",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.3.0",
     "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
     "@types/rosie": "^0.0.45",
     "@types/supertest": "^7.2.0",
     "@types/swagger-ui-express": "^4.1.8",

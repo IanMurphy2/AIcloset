@@ -17,6 +17,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Mi armario" },
+  { to: "/outfits", label: "Mis outfits" },
   { to: "/outfits/new", label: "Armar outfit" },
 ];
 

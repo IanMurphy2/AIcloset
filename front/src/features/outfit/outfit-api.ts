@@ -7,7 +7,8 @@
  *
  *   POST /outfit       body  { name, description, isPublic?, items: { clothingId, category }[] }
  *   PUT  /outfit/{id}        mismo body (reemplaza metadatos + items)
- *   GET  /outfit/{id} -> OutfitResponse
+ *   GET  /outfit       -> OutfitResponse[]   (outfits del usuario)
+ *   GET  /outfit/{id}  -> OutfitResponse     (404 si no es del usuario)
  *
  *   OutfitResponse = {
  *     id, name, description, isPublic: boolean,
@@ -97,4 +98,9 @@ export function updateOutfit(
 /** Carga un outfit existente (modo edición). `GET /outfit/{id}`. */
 export function getOutfit(id: string): Promise<OutfitResponse> {
   return apiFetch<OutfitResponse>(`/outfit/${id}`);
+}
+
+/** Lista los outfits del usuario autenticado. `GET /outfit`. */
+export function listOutfits(): Promise<OutfitResponse[]> {
+  return apiFetch<OutfitResponse[]>("/outfit");
 }

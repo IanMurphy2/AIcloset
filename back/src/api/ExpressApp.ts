@@ -5,6 +5,7 @@ import path from 'path';
 import config from '../Config';
 import passport from '../passportInstance';
 import { createUploadRouter } from './routes/upload';
+import { createAuthGoogleRouter } from './routes/auth-google';
 import { RegisterRoutes } from './tsoa/routes';
 
 export const createExpressApp = () => {
@@ -19,6 +20,7 @@ export const createExpressApp = () => {
 
   app.use('/uploads', express.static(uploadDir));
   app.use('/clothing', createUploadRouter());
+  app.use('/auth', createAuthGoogleRouter());
 
   app.use('/docs', swaggerUi.serve, async (_req: ExRequest, res: ExResponse) => {
     try {

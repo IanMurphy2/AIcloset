@@ -13,6 +13,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { LoginPage } from "@/features/auth/LoginPage";
+import { OAuthCallbackPage } from "@/features/auth/OAuthCallbackPage";
 import { RegisterPage } from "@/features/auth/RegisterPage";
 import { ClosetPage } from "@/features/closet/ClosetPage";
 
@@ -22,6 +23,7 @@ export function AppRoutes() {
       {/* Públicas */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/auth/callback" element={<OAuthCallbackPage />} />
 
       {/* Protegidas: guard -> layout -> páginas */}
       <Route element={<ProtectedRoute />}>

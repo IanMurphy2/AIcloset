@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ApiError } from "@/lib/api/client";
+import { ApiError, API_BASE_URL } from "@/lib/api/client";
 import { AuthProvider } from "@/features/auth/AuthProvider";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { getToken } from "@/lib/auth/token";
@@ -23,7 +23,7 @@ const loginMock = vi.mocked(authApi.login);
  * Render del flujo real: arranca en `/login` y monta una ruta `/` "protegida"
  * de marcador para poder verificar la navegación post-login.
  */
-function renderLoginFlow() {
+function renderLoginFlow(initialEntry = "/login") {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: { retry: false },
@@ -34,7 +34,7 @@ function renderLoginFlow() {
   return render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <MemoryRouter initialEntries={["/login"]}>
+        <MemoryRouter initialEntries={[initialEntry]}>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/" element={<div>Home protegida</div>} />
@@ -127,6 +127,25 @@ describe("LoginPage", () => {
     expect(screen.getByText("El email es obligatorio.")).toBeInTheDocument();
     expect(
       screen.getByText("La contraseña es obligatoria."),
+    ).toBeInTheDocument();
+  });
+
+  it("el botón de Google apunta a ${API_BASE}/auth/google (navegación full-page)", () => {
+    renderLoginFlow();
+
+    const googleLink = screen.getByRole("link", { name: /Google/ });
+    // Reutiliza la base configurable de IAN-8 (no hardcodea el host).
+    expect(googleLink).toHaveAttribute(
+      "href",
+      `${API_BASE_URL}/auth/google`,
+    );
+  });
+
+  it("con ?error=oauth muestra el mensaje de error de Google", () => {
+    renderLoginFlow("/login?error=oauth");
+
+    expect(
+      screen.getByText("No se pudo iniciar sesión con Google."),
     ).toBeInTheDocument();
   });
 });

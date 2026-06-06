@@ -2,6 +2,9 @@
  * Tarjeta de una prenda: imagen, descripción, metadatos (categoría/color) y
  * acciones de Editar / Eliminar (IAN-15).
  *
+ * - La imagen y el título enlazan al detalle de la prenda (`/closet/:id`,
+ *   IAN-16). Se usan `<Link>` puntuales (no envolvemos toda la card) para que
+ *   los botones Editar/Eliminar no disparen la navegación al detalle.
  * - "Editar" navega a `/closet/:id/edit`.
  * - "Eliminar" abre un diálogo de confirmación; al confirmar, ejecuta
  *   `DELETE /clothing/{id}` vía `useMutation` y, en éxito, invalida `['clothing']`
@@ -56,16 +59,25 @@ export function ClothingCard({ item }: ClothingCardProps) {
 
   return (
     <Card className="overflow-hidden">
-      <div className="aspect-square w-full overflow-hidden bg-muted">
+      <Link
+        to={`/closet/${item.id}`}
+        aria-label={`Ver detalle de ${item.description}`}
+        className="block aspect-square w-full overflow-hidden bg-muted"
+      >
         <img
           src={resolveImageUrl(item.imageUrl)}
           alt={item.description}
           loading="lazy"
           className="h-full w-full object-cover"
         />
-      </div>
+      </Link>
       <CardContent className="flex flex-col gap-2 p-4">
-        <p className="text-sm font-medium leading-snug">{item.description}</p>
+        <Link
+          to={`/closet/${item.id}`}
+          className="text-sm font-medium leading-snug underline-offset-4 hover:underline"
+        >
+          {item.description}
+        </Link>
         {(item.category || item.color) && (
           <div className="flex flex-wrap gap-1.5">
             {item.category && (

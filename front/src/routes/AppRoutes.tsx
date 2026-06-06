@@ -14,6 +14,7 @@ import { Layout } from "@/components/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { ClosetPage } from "@/features/closet/ClosetPage";
+import { OutfitBuilderPage } from "@/features/outfit/OutfitBuilderPage";
 
 export function AppRoutes() {
   return (
@@ -25,6 +26,7 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
           <Route index element={<ClosetPage />} />
+          <Route path="outfits/new" element={<OutfitBuilderPage />} />
           {/* Sumar aquí más rutas protegidas (inventario, outfits, etc.). */}
         </Route>
       </Route>

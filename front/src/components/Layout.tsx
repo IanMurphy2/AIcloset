@@ -15,7 +15,10 @@ interface NavItem {
   label: string;
 }
 
-const NAV_ITEMS: NavItem[] = [{ to: "/", label: "Mi armario" }];
+const NAV_ITEMS: NavItem[] = [
+  { to: "/", label: "Mi armario" },
+  { to: "/outfits/new", label: "Armar outfit" },
+];
 
 export function Layout() {
   return (

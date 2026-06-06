@@ -42,7 +42,17 @@ export type OutfitBuilderAction =
   | { type: "assign"; slot: OutfitSlot; clothing: ClothingItem }
   | { type: "remove"; slot: OutfitSlot }
   | { type: "reorder"; from: number; to: number }
+  | { type: "hydrate"; items: HydrationItem[] }
   | { type: "reset" };
+
+/**
+ * Item para rehidratar el builder en modo edición: una prenda ya asignada a un
+ * slot. El orden del array define `position`. Lo usa la acción `hydrate`.
+ */
+export interface HydrationItem {
+  slot: OutfitSlot;
+  clothing: ClothingItem;
+}
 
 /** Estado inicial: todos los slots vacíos, sin orden. */
 export function createInitialState(): OutfitBuilderState {
@@ -99,6 +109,19 @@ export function outfitReducer(
       return { ...state, order: moveItem(state.order, from, to) };
     }
 
+    case "hydrate": {
+      // Reemplaza todo el estado a partir de items existentes (modo edición).
+      // El orden del array define `position`; el último gana si hay slots
+      // repetidos (no debería pasar: una prenda por slot).
+      const next = createInitialState();
+      for (const { slot, clothing } of action.items) {
+        const wasEmpty = next.assignments[slot] === null;
+        next.assignments[slot] = clothing;
+        if (wasEmpty) next.order.push(slot);
+      }
+      return next;
+    }
+
     case "reset":
       return createInitialState();
 
@@ -132,6 +155,8 @@ export interface OutfitBuilderApi {
   remove: (slot: OutfitSlot) => void;
   /** Reordena los slots ocupados (índices dentro de `order`). */
   reorder: (from: number, to: number) => void;
+  /** Rehidrata el builder desde items existentes (modo edición). */
+  hydrate: (items: HydrationItem[]) => void;
   /** Vacía todo el outfit. */
   reset: () => void;
   /**
@@ -157,11 +182,15 @@ export function useOutfitBuilder(): OutfitBuilderApi {
     (from: number, to: number) => dispatch({ type: "reorder", from, to }),
     [],
   );
+  const hydrate = useCallback(
+    (items: HydrationItem[]) => dispatch({ type: "hydrate", items }),
+    [],
+  );
   const reset = useCallback(() => dispatch({ type: "reset" }), []);
   const toItems = useCallback(() => selectItems(state), [state]);
 
   return useMemo(
-    () => ({ state, assign, remove, reorder, reset, toItems }),
-    [state, assign, remove, reorder, reset, toItems],
+    () => ({ state, assign, remove, reorder, hydrate, reset, toItems }),
+    [state, assign, remove, reorder, hydrate, reset, toItems],
   );
 }

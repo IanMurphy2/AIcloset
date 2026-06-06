@@ -27,6 +27,7 @@ export function AppRoutes() {
         <Route element={<Layout />}>
           <Route index element={<ClosetPage />} />
           <Route path="outfits/new" element={<OutfitBuilderPage />} />
+          <Route path="outfits/:id/edit" element={<OutfitBuilderPage />} />
           {/* Sumar aquí más rutas protegidas (inventario, outfits, etc.). */}
         </Route>
       </Route>

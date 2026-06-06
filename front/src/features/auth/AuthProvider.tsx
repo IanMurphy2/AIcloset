@@ -8,16 +8,38 @@
 
 import { useCallback, useMemo, useState, type ReactNode } from "react";
 
-import { clearToken, getToken, setToken } from "@/lib/auth/token";
+import {
+  clearToken,
+  getToken,
+  isTokenExpired,
+  setToken,
+} from "@/lib/auth/token";
 import {
   AuthContext,
   type AuthContextValue,
   type AuthUser,
 } from "@/features/auth/auth-context";
 
+/**
+ * Lee el token de localStorage al inicializar, descartando los que ya vencieron.
+ *
+ * Un JWT con `exp` pasado no debe dejar "entrar" a rutas protegidas tras un
+ * refresh: lo borramos de localStorage y arrancamos como no autenticado, de
+ * modo que el guard redirija a `/login`. La verificación de firma es del
+ * backend; acá solo parseamos el `exp` (ver `isTokenExpired`).
+ */
+function readInitialToken(): string | null {
+  const stored = getToken();
+  if (stored !== null && isTokenExpired(stored)) {
+    clearToken();
+    return null;
+  }
+  return stored;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   // Estado inicial derivado de localStorage para sobrevivir a un refresh.
-  const [token, setTokenState] = useState<string | null>(() => getToken());
+  const [token, setTokenState] = useState<string | null>(readInitialToken);
   const [user, setUser] = useState<AuthUser | null>(null);
 
   const login = useCallback((nextToken: string, nextUser?: AuthUser) => {

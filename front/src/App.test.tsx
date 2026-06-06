@@ -1,3 +1,4 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it } from "vitest";
@@ -5,14 +6,17 @@ import { afterEach, describe, expect, it } from "vitest";
 import { AuthProvider } from "@/features/auth/AuthProvider";
 import { TOKEN_STORAGE_KEY } from "@/lib/auth/token";
 import { AppRoutes } from "@/routes/AppRoutes";
+import { createTestQueryClient } from "@/test/renderWithProviders";
 
 function renderRoutesAt(initialPath: string) {
   return render(
-    <AuthProvider>
-      <MemoryRouter initialEntries={[initialPath]}>
-        <AppRoutes />
-      </MemoryRouter>
-    </AuthProvider>,
+    <QueryClientProvider client={createTestQueryClient()}>
+      <AuthProvider>
+        <MemoryRouter initialEntries={[initialPath]}>
+          <AppRoutes />
+        </MemoryRouter>
+      </AuthProvider>
+    </QueryClientProvider>,
   );
 }
 

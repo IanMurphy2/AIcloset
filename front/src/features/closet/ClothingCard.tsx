@@ -1,9 +1,25 @@
 /**
- * Tarjeta de una prenda: imagen, descripción y metadatos (categoría/color).
+ * Tarjeta de una prenda: imagen, descripción, metadatos (categoría/color) y
+ * acciones de Editar / Eliminar (IAN-15).
+ *
+ * - "Editar" navega a `/closet/:id/edit`.
+ * - "Eliminar" abre un diálogo de confirmación; al confirmar, ejecuta
+ *   `DELETE /clothing/{id}` vía `useMutation` y, en éxito, invalida `['clothing']`
+ *   para que el grid se refresque sin la prenda.
  */
 
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { Pencil, Trash2 } from "lucide-react";
+
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { ApiError } from "@/lib/api/client";
 import { resolveImageUrl } from "@/features/closet/imageUrl";
+import { deleteClothing } from "@/features/closet/updateClothing";
 import type { ClothingItem } from "@/features/closet/types";
 
 interface ClothingCardProps {
@@ -11,6 +27,33 @@ interface ClothingCardProps {
 }
 
 export function ClothingCard({ item }: ClothingCardProps) {
+  const queryClient = useQueryClient();
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteClothing(item.id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["clothing"] });
+      setConfirmingDelete(false);
+    },
+  });
+
+  const deleteError = deleteMutation.isError
+    ? deleteMutation.error instanceof ApiError
+      ? deleteMutation.error.message
+      : "No pudimos eliminar la prenda. Intentá de nuevo."
+    : null;
+
+  function handleOpenConfirm() {
+    deleteMutation.reset();
+    setConfirmingDelete(true);
+  }
+
+  function handleCancelDelete() {
+    if (deleteMutation.isPending) return;
+    setConfirmingDelete(false);
+  }
+
   return (
     <Card className="overflow-hidden">
       <div className="aspect-square w-full overflow-hidden bg-muted">
@@ -37,7 +80,42 @@ export function ClothingCard({ item }: ClothingCardProps) {
             )}
           </div>
         )}
+
+        <div className="mt-1 flex gap-1.5">
+          <Link
+            to={`/closet/${item.id}/edit`}
+            aria-label={`Editar ${item.description}`}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "icon" }),
+              "h-8 w-8",
+            )}
+          >
+            <Pencil aria-hidden="true" />
+          </Link>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            aria-label={`Eliminar ${item.description}`}
+            onClick={handleOpenConfirm}
+          >
+            <Trash2 aria-hidden="true" />
+          </Button>
+        </div>
       </CardContent>
+
+      <ConfirmDialog
+        open={confirmingDelete}
+        title="Eliminar prenda"
+        description={`¿Seguro que querés eliminar "${item.description}"? Esta acción no se puede deshacer.`}
+        confirmLabel={deleteMutation.isPending ? "Eliminando…" : "Eliminar"}
+        confirmVariant="destructive"
+        isPending={deleteMutation.isPending}
+        errorMessage={deleteError}
+        onConfirm={() => deleteMutation.mutate()}
+        onCancel={handleCancelDelete}
+      />
     </Card>
   );
 }

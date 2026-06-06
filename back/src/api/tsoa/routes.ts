@@ -19,11 +19,13 @@ const expressAuthenticationRecasted = expressAuthentication as (req: ExRequest, 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-    "ClothingSummary": {
+    "OutfitItemResponse": {
         "dataType": "refObject",
         "properties": {
-            "id": {"dataType":"string","required":true},
+            "clothingId": {"dataType":"string","required":true},
             "imageUrl": {"dataType":"string","required":true},
+            "category": {"dataType":"string","required":true},
+            "position": {"dataType":"double","required":true},
         },
         "additionalProperties": true,
     },
@@ -34,9 +36,19 @@ const models: TsoaRoute.Models = {
             "id": {"dataType":"string","required":true},
             "name": {"dataType":"string","required":true},
             "description": {"dataType":"string","required":true},
-            "clothing": {"dataType":"array","array":{"dataType":"refObject","ref":"ClothingSummary"},"required":true},
+            "isPublic": {"dataType":"boolean","required":true},
+            "items": {"dataType":"array","array":{"dataType":"refObject","ref":"OutfitItemResponse"},"required":true},
             "createdAt": {"dataType":"datetime","required":true},
             "updatedAt": {"dataType":"datetime","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OutfitItemInput": {
+        "dataType": "refObject",
+        "properties": {
+            "clothingId": {"dataType":"string","required":true},
+            "category": {"dataType":"string","required":true},
         },
         "additionalProperties": true,
     },
@@ -46,7 +58,8 @@ const models: TsoaRoute.Models = {
         "properties": {
             "name": {"dataType":"string","required":true},
             "description": {"dataType":"string","required":true},
-            "clothingIds": {"dataType":"array","array":{"dataType":"string"},"required":true},
+            "isPublic": {"dataType":"boolean"},
+            "items": {"dataType":"array","array":{"dataType":"refObject","ref":"OutfitItemInput"},"required":true},
         },
         "additionalProperties": true,
     },

@@ -1,5 +1,5 @@
-import { BaseEntity, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Clothing } from "./Clothing";
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { OutfitItem } from "./OutfitItem";
 import { User } from "./User";
 
 @Entity('outfit')
@@ -20,9 +20,11 @@ export class Outfit extends BaseEntity {
     @Column()
     description: string;
 
-    @ManyToMany(() => Clothing)
-    @JoinTable()
-    clothing: Clothing[];
+    @Column({ default: false })
+    isPublic: boolean;
+
+    @OneToMany(() => OutfitItem, item => item.outfit, { cascade: true })
+    items: OutfitItem[];
 
     @Column()
     createdAt: Date;

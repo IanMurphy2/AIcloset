@@ -1,19 +1,30 @@
-import { Button } from "@/components/ui/button";
+/**
+ * Raíz de la aplicación.
+ *
+ * Monta el `BrowserRouter`, conecta el manejo de 401 con React Router y
+ * renderiza el árbol de rutas. `AuthProvider` + `QueryClientProvider` los monta
+ * `main.tsx` por encima de este componente.
+ */
+
+import { BrowserRouter } from "react-router-dom";
+
+import { AppRoutes } from "@/routes/AppRoutes";
+import { useUnauthorizedRedirect } from "@/routes/useUnauthorizedRedirect";
+
+/**
+ * Componente interno: vive dentro del router y del `AuthProvider`, por lo que
+ * puede usar `useNavigate` y `useAuth` para refinar la redirección de 401.
+ */
+function AppContent() {
+  useUnauthorizedRedirect();
+  return <AppRoutes />;
+}
 
 function App() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background p-8">
-      <h1 className="text-4xl font-bold tracking-tight text-primary">
-        AI Closet
-      </h1>
-      <p className="text-lg text-muted-foreground">
-        Bootstrap del frontend funcionando: Vite + React + TS + Tailwind +
-        shadcn/ui.
-      </p>
-      <Button onClick={() => alert("shadcn/ui Button OK")}>
-        Botón de ejemplo
-      </Button>
-    </main>
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

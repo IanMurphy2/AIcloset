@@ -35,7 +35,7 @@ describe('Clothing API', () => {
   }, 15000);
 
   afterEach(async () => {
-    await AppDataSource.query('DELETE FROM outfit_clothing_clothing');
+    await AppDataSource.query('DELETE FROM outfit_item');
     await AppDataSource.query('DELETE FROM clothing');
     await AppDataSource.query('DELETE FROM outfit');
   });

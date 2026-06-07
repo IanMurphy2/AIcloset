@@ -1,13 +1,15 @@
 /**
  * Layout base de las rutas protegidas.
  *
- * Renderiza la navegación principal y un `<Outlet />` donde se montan las
- * páginas hijas. La acción de logout se conectará en IAN-12; dejamos el slot
- * en la nav para no rehacer el layout entonces.
+ * Renderiza la navegación principal, la acción de logout y un `<Outlet />`
+ * donde se montan las páginas hijas.
  */
 
-import { NavLink, Outlet } from "react-router-dom";
+import { LogOut } from "lucide-react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth/auth-context";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -18,6 +20,17 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [{ to: "/", label: "Mi armario" }];
 
 export function Layout() {
+  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
+  // Identidad a mostrar junto al botón, si el AuthContext la tiene disponible.
+  const identity = user?.name ?? user?.email ?? null;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="border-b">
@@ -46,8 +59,29 @@ export function Layout() {
               </li>
             ))}
           </ul>
-          {/* Slot para la acción de logout (IAN-12). */}
-          <div className="ml-auto" />
+          {/* Acción de logout: solo visible con sesión activa. */}
+          {isAuthenticated && (
+            <div className="ml-auto flex items-center gap-3">
+              {identity && (
+                <span
+                  className="text-sm text-muted-foreground"
+                  data-testid="auth-identity"
+                >
+                  {identity}
+                </span>
+              )}
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                aria-label="Cerrar sesión"
+              >
+                <LogOut aria-hidden="true" />
+                Cerrar sesión
+              </Button>
+            </div>
+          )}
         </nav>
       </header>
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">

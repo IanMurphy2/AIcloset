@@ -3,8 +3,7 @@ import { IsEmail, IsString, MinLength, validate } from "class-validator";
 import { User } from "../../lib/models/User";
 import { AppDataSource } from "../../dbConnection";
 import { HttpError } from "../../lib/errors/HttpError";
-import jwt from "jsonwebtoken";
-import config from "../../Config";
+import { signToken } from "../../lib/auth/signToken";
 
 class RegisterRequest {
     @IsEmail(undefined, { message: "Invalid email format" })
@@ -52,11 +51,7 @@ export class AuthController extends Controller {
         const user = repo.create({ email: body.email, password: body.password, name: body.name });
         await repo.save(user);
 
-        const token = jwt.sign(
-            { id: user.id, email: user.email },
-            config.get("jwt.secret") as string,
-            { expiresIn: config.get("jwt.expiresIn") as jwt.SignOptions["expiresIn"] }
-        );
+        const token = signToken(user);
 
         this.setStatus(201);
         return { token, user: { id: user.id, email: user.email, name: user.name } };
@@ -80,11 +75,7 @@ export class AuthController extends Controller {
             throw new HttpError(401, "Invalid email or password");
         }
 
-        const token = jwt.sign(
-            { id: user.id, email: user.email },
-            config.get("jwt.secret") as string,
-            { expiresIn: config.get("jwt.expiresIn") as jwt.SignOptions["expiresIn"] }
-        );
+        const token = signToken(user);
 
         return { token, user: { id: user.id, email: user.email, name: user.name } };
     }

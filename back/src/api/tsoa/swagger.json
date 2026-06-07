@@ -7,18 +7,27 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"ClothingSummary": {
+			"OutfitItemResponse": {
 				"properties": {
-					"id": {
+					"clothingId": {
 						"type": "string"
 					},
 					"imageUrl": {
 						"type": "string"
+					},
+					"category": {
+						"type": "string"
+					},
+					"position": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
-					"id",
-					"imageUrl"
+					"clothingId",
+					"imageUrl",
+					"category",
+					"position"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -34,9 +43,12 @@
 					"description": {
 						"type": "string"
 					},
-					"clothing": {
+					"isPublic": {
+						"type": "boolean"
+					},
+					"items": {
 						"items": {
-							"$ref": "#/components/schemas/ClothingSummary"
+							"$ref": "#/components/schemas/OutfitItemResponse"
 						},
 						"type": "array"
 					},
@@ -53,9 +65,26 @@
 					"id",
 					"name",
 					"description",
-					"clothing",
+					"isPublic",
+					"items",
 					"createdAt",
 					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"OutfitItemInput": {
+				"properties": {
+					"clothingId": {
+						"type": "string"
+					},
+					"category": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"clothingId",
+					"category"
 				],
 				"type": "object",
 				"additionalProperties": true
@@ -68,9 +97,12 @@
 					"description": {
 						"type": "string"
 					},
-					"clothingIds": {
+					"isPublic": {
+						"type": "boolean"
+					},
+					"items": {
 						"items": {
-							"type": "string"
+							"$ref": "#/components/schemas/OutfitItemInput"
 						},
 						"type": "array"
 					}
@@ -78,7 +110,7 @@
 				"required": [
 					"name",
 					"description",
-					"clothingIds"
+					"items"
 				],
 				"type": "object",
 				"additionalProperties": true

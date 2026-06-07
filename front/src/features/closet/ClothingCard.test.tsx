@@ -39,6 +39,35 @@ describe("ClothingCard — acciones editar / eliminar", () => {
     vi.clearAllMocks();
   });
 
+  it("la imagen y el título enlazan al detalle (/closet/:id)", () => {
+    renderWithProviders(<ClothingCard item={ITEM} />, { withRouter: true });
+
+    // Imagen enlazada al detalle.
+    const imageLink = screen.getByRole("link", {
+      name: "Ver detalle de Remera blanca",
+    });
+    expect(imageLink).toHaveAttribute("href", "/closet/c1");
+
+    // El título también enlaza al detalle (no al editar).
+    const titleLink = screen.getByRole("link", { name: "Remera blanca" });
+    expect(titleLink).toHaveAttribute("href", "/closet/c1");
+  });
+
+  it("los botones Editar/Eliminar apuntan a sus rutas y NO al detalle", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ClothingCard item={ITEM} />, { withRouter: true });
+
+    // Editar apunta a /closet/:id/edit (no al detalle /closet/:id).
+    const edit = screen.getByRole("link", { name: "Editar Remera blanca" });
+    expect(edit).toHaveAttribute("href", "/closet/c1/edit");
+
+    // Eliminar es un botón: abre la confirmación, no navega.
+    await user.click(
+      screen.getByRole("button", { name: "Eliminar Remera blanca" }),
+    );
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
   it("ofrece un link de editar hacia /closet/:id/edit con label accesible", () => {
     renderWithProviders(<ClothingCard item={ITEM} />, { withRouter: true });
 

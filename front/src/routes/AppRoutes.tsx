@@ -17,6 +17,7 @@ import { OAuthCallbackPage } from "@/features/auth/OAuthCallbackPage";
 import { RegisterPage } from "@/features/auth/RegisterPage";
 import { AddClothingForm } from "@/features/closet/AddClothingForm";
 import { ClosetPage } from "@/features/closet/ClosetPage";
+import { ClothingDetailPage } from "@/features/closet/ClothingDetailPage";
 import { EditClothingForm } from "@/features/closet/EditClothingForm";
 
 export function AppRoutes() {
@@ -31,7 +32,13 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
           <Route index element={<ClosetPage />} />
+          {/*
+            Orden defensivo: `new` antes que `:id`. React Router v7 igual
+            rankea los segmentos estáticos por encima de los dinámicos, así que
+            `/closet/new` matchea el alta y nunca cae en el detalle.
+          */}
           <Route path="closet/new" element={<AddClothingForm />} />
+          <Route path="closet/:id" element={<ClothingDetailPage />} />
           <Route path="closet/:id/edit" element={<EditClothingForm />} />
           {/* Sumar aquí más rutas protegidas (inventario, outfits, etc.). */}
         </Route>

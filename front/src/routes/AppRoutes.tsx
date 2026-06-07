@@ -19,6 +19,9 @@ import { AddClothingForm } from "@/features/closet/AddClothingForm";
 import { ClosetPage } from "@/features/closet/ClosetPage";
 import { ClothingDetailPage } from "@/features/closet/ClothingDetailPage";
 import { EditClothingForm } from "@/features/closet/EditClothingForm";
+import { OutfitBuilderPage } from "@/features/outfit/OutfitBuilderPage";
+import { OutfitDetailPage } from "@/features/outfit/OutfitDetailPage";
+import { OutfitsListPage } from "@/features/outfit/OutfitsListPage";
 
 export function AppRoutes() {
   return (
@@ -40,7 +43,11 @@ export function AppRoutes() {
           <Route path="closet/new" element={<AddClothingForm />} />
           <Route path="closet/:id" element={<ClothingDetailPage />} />
           <Route path="closet/:id/edit" element={<EditClothingForm />} />
-          {/* Sumar aquí más rutas protegidas (inventario, outfits, etc.). */}
+          <Route path="outfits" element={<OutfitsListPage />} />
+          <Route path="outfits/new" element={<OutfitBuilderPage />} />
+          <Route path="outfits/:id" element={<OutfitDetailPage />} />
+          <Route path="outfits/:id/edit" element={<OutfitBuilderPage />} />
+          {/* Sumar aquí más rutas protegidas (inventario, etc.). */}
         </Route>
       </Route>
 

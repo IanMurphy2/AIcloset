@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^1.4.5-lts.1",
     "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.19.0",
@@ -36,7 +37,9 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "setupFiles": ["<rootDir>/test/setup.ts"],
+    "setupFiles": [
+      "<rootDir>/test/setup.ts"
+    ],
     "roots": [
       "<rootDir>/test"
     ],
@@ -60,10 +63,11 @@
     "@types/convict": "^6.1.6",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
-    "@types/multer": "^1.4.12",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^1.4.12",
     "@types/node": "^25.3.0",
     "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/rosie": "^0.0.45",
     "@types/supertest": "^7.2.0",

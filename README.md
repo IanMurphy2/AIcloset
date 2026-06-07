@@ -8,6 +8,81 @@ Al ser una herramienta que combina Visión Computacional (Computer Vision) con u
 
 ---
 
+## 0. Puesta en marcha (desarrollo local)
+
+Monorepo: backend en `back/` (Node + TypeScript + Express + TSOA + TypeORM) y
+frontend en `front/` (Vite + React, se incorpora en IAN-7).
+
+**Requisitos:** Node.js 20+, Docker y Docker Compose.
+
+### Backend
+
+1. **Levantar la base de datos** (PostgreSQL + Redis) con Docker, desde `back/`:
+
+   ```bash
+   cd back
+   docker compose up -d
+   ```
+
+   Expone **PostgreSQL en `localhost:5433`** y **Redis en `localhost:6380`**
+   (Redis aún no se usa en V1; queda listo para el pipeline de visión de V2).
+
+2. **Crear el archivo de entorno** a partir del ejemplo (desde `back/`):
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   El `.env.example` ya trae `DB_PORT=5433` para coincidir con docker-compose.
+
+3. **Instalar dependencias y generar las rutas TSOA:**
+
+   ```bash
+   npm install
+   npm run build:tsoa
+   ```
+
+4. **Levantar el servidor** en modo desarrollo:
+
+   ```bash
+   npm run dev
+   ```
+
+   La API queda en `http://localhost:3000`.
+
+### Tests del backend
+
+```bash
+cd back
+npm test
+```
+
+Los tests (jest + supertest) usan la base de datos de docker-compose. Con
+`back/.env` apuntando a `DB_PORT=5433` corren sin más; si no, exportá
+`DB_PORT=5433` antes de `npm test`. En cada PR, GitHub Actions
+(`.github/workflows/ci.yml`) corre el build y los tests automáticamente.
+
+### Scripts útiles (backend)
+
+| Script | Qué hace |
+| :--- | :--- |
+| `npm run dev` | Servidor con recarga (`ts-node-dev`); regenera TSOA antes de arrancar |
+| `npm run build` | Genera rutas/spec TSOA y compila TypeScript a `dist/` |
+| `npm run build:tsoa` | Regenera únicamente las rutas y el `swagger.json` de TSOA |
+| `npm test` | Corre la suite de jest |
+
+### Frontend
+
+La base del frontend se incorpora en el issue **IAN-7**. Una vez disponible:
+
+```bash
+cd front
+npm install
+npm run dev
+```
+
+---
+
 ## 1. Objetivos Principales
 
 - **Digitalización Automatizada:** Eliminar la fricción de cargar el inventario manual mediante el procesamiento de imágenes (remoción de fondo y etiquetado automático).

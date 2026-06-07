@@ -1,7 +1,7 @@
 /**
  * Árbol de rutas de la app.
  *
- * - `/login` es pública (placeholder hasta IAN-10).
+ * - `/login` y `/register` son públicas (forms de auth de IAN-10).
  * - El resto cuelga de `<ProtectedRoute>` y se renderiza dentro de `<Layout>`.
  *
  * Se define como `<Routes>` para poder montarlo bajo cualquier router
@@ -13,13 +13,17 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { LoginPage } from "@/features/auth/LoginPage";
+import { OAuthCallbackPage } from "@/features/auth/OAuthCallbackPage";
+import { RegisterPage } from "@/features/auth/RegisterPage";
 import { ClosetPage } from "@/features/closet/ClosetPage";
 
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Pública */}
+      {/* Públicas */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/auth/callback" element={<OAuthCallbackPage />} />
 
       {/* Protegidas: guard -> layout -> páginas */}
       <Route element={<ProtectedRoute />}>

@@ -111,6 +111,43 @@ describe("outfitReducer", () => {
     expect(outfitReducer(base, { type: "reorder", from: -1, to: 0 })).toBe(base);
   });
 
+  it("hydrate precarga slots y orden desde items existentes (modo edición)", () => {
+    const top = makeItem({ id: "t1" });
+    const shoe = makeItem({ id: "s1" });
+
+    const state = run({
+      type: "hydrate",
+      items: [
+        { slot: "tops", clothing: top },
+        { slot: "calzado", clothing: shoe },
+      ],
+    });
+
+    expect(state.assignments.tops).toBe(top);
+    expect(state.assignments.calzado).toBe(shoe);
+    expect(state.assignments.bottoms).toBeNull();
+    // El orden del array define position.
+    expect(state.order).toEqual(["tops", "calzado"]);
+    expect(selectItems(state)).toEqual([
+      { clothingId: "t1", category: "tops", position: 0 },
+      { clothingId: "s1", category: "calzado", position: 1 },
+    ]);
+  });
+
+  it("hydrate reemplaza por completo el estado previo", () => {
+    const a = makeItem({ id: "a" });
+    const b = makeItem({ id: "b" });
+
+    const state = run(
+      { type: "assign", slot: "bottoms", clothing: a },
+      { type: "hydrate", items: [{ slot: "tops", clothing: b }] },
+    );
+
+    expect(state.assignments.bottoms).toBeNull();
+    expect(state.assignments.tops).toBe(b);
+    expect(state.order).toEqual(["tops"]);
+  });
+
   it("reset vuelve al estado inicial", () => {
     const a = makeItem({ id: "a" });
     const state = run(

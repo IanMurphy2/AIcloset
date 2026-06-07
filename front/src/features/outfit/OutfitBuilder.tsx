@@ -40,14 +40,24 @@ import {
 import { OutfitSlot } from "@/features/outfit/OutfitSlot";
 import { OUTFIT_SLOTS, isOutfitSlot } from "@/features/outfit/slots";
 import type { OutfitItem } from "@/features/outfit/types";
-import { useOutfitBuilder } from "@/features/outfit/useOutfitBuilder";
+import {
+  useOutfitBuilder,
+  type OutfitBuilderApi,
+} from "@/features/outfit/useOutfitBuilder";
 
 interface OutfitBuilderProps {
   /** Prendas del inventario disponibles para arrastrar. */
   clothing: ClothingItem[];
   /**
-   * Se invoca con el outfit en construcción cada vez que cambia. Lo consume
-   * IAN-19 para guardar (`POST /outfit`). Acá no se guarda.
+   * API del builder (estado + acciones). Permite que el padre controle el
+   * estado (p.ej. la página de guardado/edición de IAN-19, que necesita leer y
+   * rehidratar slots). Si no se provee, el builder gestiona su propio estado
+   * interno (modo no controlado, retrocompatible).
+   */
+  builder?: OutfitBuilderApi;
+  /**
+   * Se invoca con el outfit en construcción cada vez que cambia. Útil cuando el
+   * builder es no controlado y el padre solo quiere observar los items.
    */
   onItemsChange?: (items: OutfitItem[]) => void;
 }
@@ -58,8 +68,14 @@ function slotFromSortableId(id: string) {
   return isOutfitSlot(raw) ? raw : null;
 }
 
-export function OutfitBuilder({ clothing, onItemsChange }: OutfitBuilderProps) {
-  const { state, assign, remove, reorder, toItems } = useOutfitBuilder();
+export function OutfitBuilder({
+  clothing,
+  builder,
+  onItemsChange,
+}: OutfitBuilderProps) {
+  // Builder interno: solo se usa cuando el padre no provee uno (no controlado).
+  const internalBuilder = useOutfitBuilder();
+  const { state, assign, remove, reorder, toItems } = builder ?? internalBuilder;
   const [activeClothing, setActiveClothing] = useState<ClothingItem | null>(null);
 
   // Notifica el outfit en construcción hacia arriba (IAN-19) en cada cambio.

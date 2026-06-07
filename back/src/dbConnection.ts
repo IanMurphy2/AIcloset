@@ -2,6 +2,7 @@
 import { DataSource } from 'typeorm';
 import { Clothing } from './lib/models/Clothing';
 import { Outfit } from './lib/models/Outfit';
+import { OutfitItem } from './lib/models/OutfitItem';
 import config from './Config';
 import { User } from './lib/models/User';
 
@@ -15,7 +16,7 @@ export const AppDataSource = new DataSource({
   database: config.get('db.name'),
   synchronize: true,
   logging: true,
-  entities: [Clothing, Outfit, User],
+  entities: [Clothing, Outfit, OutfitItem, User],
 });
 
 export const initializeDB = async () => {

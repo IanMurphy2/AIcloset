@@ -42,7 +42,7 @@ describe("ClosetPage", () => {
       makeItem({ description: "Campera roja", category: "abrigos", color: "rojo" }),
     ]);
 
-    renderWithProviders(<ClosetPage />);
+    renderWithProviders(<ClosetPage />, { withRouter: true });
 
     expect(await screen.findByText("Remera blanca")).toBeInTheDocument();
     expect(screen.getByText("Pantalón azul")).toBeInTheDocument();
@@ -59,7 +59,7 @@ describe("ClosetPage", () => {
   it("muestra el estado vacío cuando la API devuelve []", async () => {
     apiFetchMock.mockResolvedValue([]);
 
-    renderWithProviders(<ClosetPage />);
+    renderWithProviders(<ClosetPage />, { withRouter: true });
 
     expect(await screen.findByText("Tu armario está vacío.")).toBeInTheDocument();
   });
@@ -70,7 +70,7 @@ describe("ClosetPage", () => {
     apiFetchMock.mockResolvedValueOnce([]);
 
     const user = userEvent.setup();
-    renderWithProviders(<ClosetPage />);
+    renderWithProviders(<ClosetPage />, { withRouter: true });
 
     await screen.findByText("Remera blanca");
 
@@ -86,7 +86,7 @@ describe("ClosetPage", () => {
     apiFetchMock.mockResolvedValue([makeItem({ description: "Remera blanca" })]);
 
     const user = userEvent.setup();
-    renderWithProviders(<ClosetPage />);
+    renderWithProviders(<ClosetPage />, { withRouter: true });
 
     await screen.findByText("Remera blanca");
     expect(apiFetchMock).toHaveBeenLastCalledWith("/clothing");
@@ -105,7 +105,7 @@ describe("ClosetPage", () => {
   it("muestra el estado de error cuando la API falla", async () => {
     apiFetchMock.mockRejectedValue(new Error("boom"));
 
-    renderWithProviders(<ClosetPage />);
+    renderWithProviders(<ClosetPage />, { withRouter: true });
 
     expect(
       await screen.findByText("No pudimos cargar tus prendas."),

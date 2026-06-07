@@ -83,6 +83,27 @@ describe("apiFetch", () => {
     expect(init?.body).toBe(JSON.stringify({ email: "a@b.com", password: "x" }));
   });
 
+  it("no serializa el FormData ni fija Content-Type (multipart), pero adjunta el JWT", async () => {
+    setToken("jwt-multipart");
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(jsonResponse({ imageUrl: "/uploads/x.png" }));
+
+    const formData = new FormData();
+    formData.append("image", new Blob(["data"], { type: "image/png" }), "x.png");
+
+    await apiFetch("/clothing/upload", { method: "POST", body: formData });
+
+    const [, init] = fetchMock.mock.calls[0];
+    const headers = new Headers(init?.headers);
+    // El browser pone el boundary: no debemos fijar Content-Type a mano.
+    expect(headers.has("Content-Type")).toBe(false);
+    // El JWT sí debe ir.
+    expect(headers.get("Authorization")).toBe("Bearer jwt-multipart");
+    // El body se pasa tal cual (sin serializar a JSON).
+    expect(init?.body).toBe(formData);
+  });
+
   it("devuelve el JSON parseado en respuestas OK", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
       jsonResponse({ token: "abc", user: { id: 1 } }),

@@ -6,7 +6,9 @@
  */
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
+import { buttonVariants } from "@/components/ui/button";
 import { ClothingFilters } from "@/features/closet/ClothingFilters";
 import { ClothingGrid } from "@/features/closet/ClothingGrid";
 import { useClothing } from "@/features/closet/useClothing";
@@ -18,11 +20,16 @@ export function ClosetPage() {
 
   return (
     <section className="flex flex-col gap-6">
-      <header className="flex flex-col gap-1">
-        <h2 className="text-2xl font-semibold tracking-tight">Mi armario</h2>
-        <p className="text-muted-foreground">
-          Tus prendas. Filtrá por categoría o color.
-        </p>
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-semibold tracking-tight">Mi armario</h2>
+          <p className="text-muted-foreground">
+            Tus prendas. Filtrá por categoría o color.
+          </p>
+        </div>
+        <Link to="/closet/new" className={buttonVariants()}>
+          Agregar prenda
+        </Link>
       </header>
 
       <ClothingFilters value={filters} onChange={setFilters} />

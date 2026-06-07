@@ -49,6 +49,11 @@ export interface AuthFormProps {
   onSubmit: (values: AuthFormValues) => void;
   /** Pie del formulario con el enlace a la pantalla opuesta. */
   footer: React.ReactNode;
+  /**
+   * Contenido opcional bajo el form (p.ej. separador + login con Google).
+   * Se renderiza dentro del `CardContent`, tras el botón de submit.
+   */
+  extra?: React.ReactNode;
 }
 
 /** Longitud mínima de password exigida por el backend (`MinLength(8)`). */
@@ -64,6 +69,7 @@ export function AuthForm({
   errorMessage,
   onSubmit,
   footer,
+  extra,
 }: AuthFormProps) {
   const isRegister = mode === "register";
 
@@ -187,6 +193,7 @@ export function AuthForm({
               {isPending ? pendingLabel : submitLabel}
             </Button>
           </form>
+          {extra}
         </CardContent>
         <div className="px-6 pb-6 text-center text-sm text-muted-foreground">
           {footer}

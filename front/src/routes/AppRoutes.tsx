@@ -17,6 +17,7 @@ import { OAuthCallbackPage } from "@/features/auth/OAuthCallbackPage";
 import { RegisterPage } from "@/features/auth/RegisterPage";
 import { AddClothingForm } from "@/features/closet/AddClothingForm";
 import { ClosetPage } from "@/features/closet/ClosetPage";
+import { EditClothingForm } from "@/features/closet/EditClothingForm";
 
 export function AppRoutes() {
   return (
@@ -31,6 +32,7 @@ export function AppRoutes() {
         <Route element={<Layout />}>
           <Route index element={<ClosetPage />} />
           <Route path="closet/new" element={<AddClothingForm />} />
+          <Route path="closet/:id/edit" element={<EditClothingForm />} />
           {/* Sumar aquí más rutas protegidas (inventario, outfits, etc.). */}
         </Route>
       </Route>

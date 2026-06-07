@@ -14,6 +14,13 @@ const config = convict({
     default: 3000,
     env: 'PORT'
   },
+  app: {
+    frontendUrl: {
+      doc: 'Base URL of the frontend, used to redirect after OAuth.',
+      default: 'http://localhost:5173',
+      env: 'FRONTEND_URL'
+    }
+  },
   db: {
     host: { default: 'localhost', env: 'DB_HOST' },
     port: { default: 5432, env: 'DB_PORT', format: 'port' },
@@ -32,6 +39,23 @@ const config = convict({
   jwt: {
     secret: { default: 'secret', env: 'JWT_SECRET' },
     expiresIn: { default: '7d', env: 'JWT_EXPIRES_IN' }
+  },
+  google: {
+    clientId: {
+      doc: 'Google OAuth client ID. If empty, the Google strategy is not registered.',
+      default: '',
+      env: 'GOOGLE_CLIENT_ID'
+    },
+    clientSecret: {
+      doc: 'Google OAuth client secret. If empty, the Google strategy is not registered.',
+      default: '',
+      env: 'GOOGLE_CLIENT_SECRET'
+    },
+    callbackUrl: {
+      doc: 'Google OAuth callback URL registered with Google.',
+      default: 'http://localhost:3000/auth/google/callback',
+      env: 'GOOGLE_CALLBACK_URL'
+    }
   }
 });
 
